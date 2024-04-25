@@ -21,6 +21,10 @@ public class Grid {
         return this.actual_live_cells.contains(cell);
     }
 
+    public boolean alreadyChecked(Cell cell) {
+        return this.already_checked_cells.contains(cell);
+    }
+
     public boolean isCellWillStayAlive(int liveNeighbors) {
         return this.staying_alive_rules.contains(liveNeighbors);
     }
@@ -45,6 +49,7 @@ public class Grid {
 
     public void buildFuturGrid() {
         this.futur_live_cells.clear();                                                      // Vide la liste des futures cellules vivantes
+        this.already_checked_cells.clear();
 
         for (Cell cell : this.actual_live_cells) {                                          // Boucle sur toutes les cellules actuellement vivantes
 
@@ -57,11 +62,14 @@ public class Grid {
             // Vérifie quelles cellules prennent vie
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dy = -1; dy <= 1; dy++) {
+
                     if (dx == 0 && dy == 0) continue;                                       // Ignorer la cellule elle-même (passe à l'itération suivante)
                     Cell nearby_cell = new Cell(cell.getX() + dx, cell.getY()+ dy);         // Création de la cellule voisine
+                    if(!alreadyChecked(cell)) continue;                                     // Ignorer la cellule si elle a déjà été verifié (passe à l'itération suivante)
                     liveNeighbors = countLiveNeighbors(nearby_cell);                        // Calcul le nombre de voisin pour la cellule donnée
                     if (!isCellAlive(nearby_cell) && isCellWillBorn(liveNeighbors)) {       // Condition : la cellule est morte et respecte la condition "born"
                         futur_live_cells.add(nearby_cell);                                  // Ajoute la cellule à la liste des futures cellules vivantes
+                        already_checked_cells.add(nearby_cell);
                     }
                 }
             }
