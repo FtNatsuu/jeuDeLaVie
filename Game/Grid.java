@@ -1,3 +1,4 @@
+package Game;
 import java.util.HashSet;
 import java.util.Set;                                                                       // Set permet de stocker des élements unique
 
